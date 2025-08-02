@@ -11,16 +11,15 @@ export default async function HomePage() {
     <main className="min-h-screen">
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 p-4 sm:p-6">
         {products.map((p: any) => (
-          <Link
+          <div
             key={p.id}
-            href={`/product/${p.id}`}
-            className="border border-gray-300 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-600 bg-white p-4 flex flex-col cursor-pointer group"
+            className="border border-gray-300 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white p-4 flex flex-col group"
           >
             <div className="relative w-full h-48 sm:h-56 md:h-64">
               <img
                 src={p.image}
                 alt={p.title}
-                className="w-full h-full object-contain transform transition-transform duration-600 group-hover:scale-108"
+                className="w-full h-full object-contain transform transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
               />
             </div>
@@ -31,8 +30,15 @@ export default async function HomePage() {
               <p className="text-green-600 text-center font-bold mt-2 text-sm sm:text-base">
                 ${p.price.toFixed(2)}
               </p>
+
+              <Link
+                href={`/product/${p.id}`}
+                className="mt-auto text-center text-sm sm:text-base font-medium text-blue-600 hover:underline transition-colors duration-200"
+              >
+                View Details
+              </Link>
             </div>
-          </Link>
+          </div>
         ))}
       </section>
     </main>

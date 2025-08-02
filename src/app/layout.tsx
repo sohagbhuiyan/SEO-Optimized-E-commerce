@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/redux/Provider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Toaster } from "react-hot-toast";
 
 
 const geistSans = Geist({
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Providers>
           <Navbar/>
           <main className="px-10 py-6">{children}</main>
+           <Toaster position="top-right" />
           <Footer/>
         </Providers>
       </body>

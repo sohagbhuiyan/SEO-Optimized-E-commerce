@@ -22,19 +22,30 @@ export default function CheckoutPage() {
     const newErrors = { name: '', address: '', phone: '' };
     let isValid = true;
 
+    // Name validation: must contain only letters and spaces
     if (!form.name.trim()) {
       newErrors.name = 'Full name is required';
       isValid = false;
+    } else if (!/^[a-zA-Z\s]+$/.test(form.name.trim())) {
+      newErrors.name = 'Name must contain only letters and spaces';
+      isValid = false;
     }
+
+    // Address validation: must contain both letters and numbers
     if (!form.address.trim()) {
       newErrors.address = 'Shipping address is required';
       isValid = false;
+    } else if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(form.address.trim())) {
+      newErrors.address = 'Address must contain both letters and numbers';
+      isValid = false;
     }
+
+    // Phone validation: must be 10-15 digits
     if (!form.phone.trim()) {
       newErrors.phone = 'Phone number is required';
       isValid = false;
     } else if (!/^\d{10,15}$/.test(form.phone.replace(/\D/g, ''))) {
-      newErrors.phone = 'Please enter a valid phone number';
+      newErrors.phone = 'Phone number must be 10-15 digits';
       isValid = false;
     }
 

@@ -1,12 +1,21 @@
 'use client';
+
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { FaHome, FaShoppingCart, FaClipboardList } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
 
 export default function Navbar() {
+    const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   const cartItems = useSelector((state: RootState) => state.cart.totalQuantity);
 
+  if (!hasMounted) return null;
   return (
     <nav className="bg-gray-500 text-white sticky top-0 p-4 mb-6 z-1000">
       <div className="container mx-auto flex justify-between items-center">
