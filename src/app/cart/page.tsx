@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { removeFromCart, updateQuantity } from '@/redux/features/cartSlice';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ export default function CartPage() {
       <div className="space-y-4">
         {items.map((item) => (
           <div key={item.id} className="border rounded-lg p-4 flex items-center space-x-4">
-            <img src={item.image} alt={item.title} className="w-16 h-16 object-contain" />
+            <Image src={item.image} alt={item.title} className="w-16 h-16 object-contain" />
             <div className="flex-grow">
               <h3 className="font-semibold">{item.title}</h3>
               <p className="text-green-600 font-bold">${item.price.toFixed(2)}</p>

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import AddToCartButton from "@/components/AddToCartButton";
 import { Product } from "@/types";
+import Image from "next/image";
 
 export async function generateStaticParams() {
   const res = await fetch("https://fakestoreapi.com/products");
@@ -8,8 +9,9 @@ export async function generateStaticParams() {
   return products.map((p: Product) => ({ id: p.id.toString() }));
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const res = await fetch(`https://fakestoreapi.com/products/${params.id}`);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const res = await fetch(`https://fakestoreapi.com/products/${id}`);
   const product: Product = await res.json();
   
   return {
@@ -28,14 +30,15 @@ async function getProduct(id: string): Promise<Product> {
   return res.json();
 }
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const product = await getProduct(params.id);
-
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const product = await getProduct(id);
+  
   return (
     <section className="max-w-6xl mx-auto">
       <div className="grid md:grid-cols-2 gap-8">
         <div className="flex justify-center">
-          <img 
+          <Image 
             src={product.image} 
             alt={product.title} 
             className="w-full max-w-md h-96 object-contain rounded-lg"

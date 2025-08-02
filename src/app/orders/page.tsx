@@ -1,184 +1,107 @@
 'use client';
-
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useEffect, useState } from 'react';
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Typography,
-  Box,
-  Grid,
-} from '@mui/material';
+import Image from 'next/image';
 
 export default function OrdersPage() {
-  const [hasMounted, setHasMounted] = useState(false);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+      const [hasMounted, setHasMounted] = useState(false);
+  
+    useEffect(() => {
+      setHasMounted(true);
+    }, []);
 
   const orders = useSelector((state: RootState) => state.order.orders);
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
-  if (!hasMounted) return null;
-
+    if (!hasMounted) return null;
   if (orders.length === 0) {
     return (
-      <Box textAlign="center" py={6}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom>
-          No Orders Found
-        </Typography>
-        <Typography color="text.secondary">You haven't placed any orders yet.</Typography>
-      </Box>
+      <section className="text-center py-12">
+        <h1 className="text-2xl font-bold mb-4">No Orders Found</h1>
+        <p className="text-gray-600">You haven&apos;t placed any orders yet.</p>
+      </section>
     );
   }
 
-  // Find selected order
   const selectedOrderData = orders.find(order => order.id === selectedOrder);
 
-  // Basic validation helpers
-  const isValidString = (value: any): boolean => typeof value === 'string' && value.trim() !== '';
-  const isValidPhone = (value: any): boolean => /^\d+$/.test(value); // only digits
-
   return (
-    <Box p={2}>
-      <Typography variant="h4" fontWeight="bold" mb={3}>
-        Order History
-      </Typography>
-
-      <TableContainer component={Paper} sx={{ mb: 4 }}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableCell>Order ID</TableCell>
-              <TableCell>Customer Name</TableCell>
-              <TableCell>Total Items</TableCell>
-              <TableCell>Total Amount</TableCell>
-              <TableCell>Order Date</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map(order => (
-              <TableRow key={order.id} hover>
-                <TableCell>{order.id}</TableCell>
-                <TableCell>{isValidString(order.name) ? order.name : 'Invalid name'}</TableCell>
-                <TableCell>
+    <section>
+      <h1 className="text-2xl font-bold mb-6">Order History</h1>
+      
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 px-4 py-2 text-left">Order ID</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Customer Name</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Total Items</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Total Amount</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Order Date</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order.id} className="hover:bg-gray-50">
+                <td className="border border-gray-300 px-4 py-2">{order.id}</td>
+                <td className="border border-gray-300 px-4 py-2">{order.name}</td>
+                <td className="border border-gray-300 px-4 py-2">
                   {order.items.reduce((sum, item) => sum + item.quantity, 0)}
-                </TableCell>
-                <TableCell>${order.totalAmount.toFixed(2)}</TableCell>
-                <TableCell>
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  ${order.totalAmount.toFixed(2)}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
                   {new Date(order.date).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="text"
-                    color="primary"
-                    onClick={() =>
-                      setSelectedOrder(selectedOrder === order.id ? null : order.id)
-                    }
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <button
+                    onClick={() => setSelectedOrder(selectedOrder === order.id ? null : order.id)}
+                    className="text-blue-600 hover:underline"
                   >
                     {selectedOrder === order.id ? 'Hide Details' : 'View Details'}
-                  </Button>
-                </TableCell>
-              </TableRow>
+                  </button>
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </tbody>
+        </table>
+      </div>
 
       {selectedOrderData && (
-        <Box
-          sx={{
-            backgroundColor: '#fafafa',
-            p: 3,
-            borderRadius: 2,
-            boxShadow: 1,
-          }}
-        >
-          <Typography variant="h6" fontWeight="bold" mb={2}>
-            Order Details - {selectedOrderData.id}
-          </Typography>
-
-          <Grid container spacing={4} mb={3}>
-            <Grid item xs={12} md={6}>
-              <Typography>
-                <strong>Customer:</strong>{' '}
-                {isValidString(selectedOrderData.name)
-                  ? selectedOrderData.name
-                  : 'Invalid Name'}
-              </Typography>
-              <Typography>
-                <strong>Phone:</strong>{' '}
-                {isValidPhone(selectedOrderData.phone)
-                  ? selectedOrderData.phone
-                  : 'Invalid Phone Number'}
-              </Typography>
-              <Typography>
-                <strong>Address:</strong>{' '}
-                {isValidString(selectedOrderData.address)
-                  ? selectedOrderData.address
-                  : 'Invalid Address'}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography>
-                <strong>Order Date:</strong>{' '}
-                {new Date(selectedOrderData.date).toLocaleDateString()}
-              </Typography>
-              <Typography>
-                <strong>Total Amount:</strong> ${selectedOrderData.totalAmount.toFixed(2)}
-              </Typography>
-            </Grid>
-          </Grid>
-
-          <Typography variant="subtitle1" fontWeight="semibold" mb={1}>
-            Items Ordered:
-          </Typography>
-          <Box>
-            {selectedOrderData.items.map(item => (
-              <Box
-                key={item.id}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  bgcolor: 'white',
-                  p: 2,
-                  borderRadius: 1,
-                  mb: 1,
-                  boxShadow: 0.5,
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    style={{ width: 48, height: 48, objectFit: 'contain' }}
-                  />
-                  <Box>
-                    <Typography fontWeight="medium">{item.title}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Quantity: {item.quantity}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Typography fontWeight="bold">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </Typography>
-              </Box>
+        <div className="mt-6 bg-gray-50 p-4 rounded">
+          <h2 className="text-lg font-semibold mb-4">Order Details - {selectedOrderData.id}</h2>
+          <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <p><strong>Customer:</strong> {selectedOrderData.name}</p>
+              <p><strong>Phone:</strong> {selectedOrderData.phone}</p>
+              <p><strong>Address:</strong> {selectedOrderData.address}</p>
+            </div>
+            <div>
+              <p><strong>Order Date:</strong> {new Date(selectedOrderData.date).toLocaleDateString()}</p>
+              <p><strong>Total Amount:</strong> ${selectedOrderData.totalAmount.toFixed(2)}</p>
+            </div>
+          </div>
+          
+          <h3 className="font-semibold mb-2">Items Ordered:</h3>
+          <div className="space-y-2">
+            {selectedOrderData.items.map((item) => (
+              <div key={item.id} className="flex justify-between items-center bg-white p-2 rounded">
+                <div className="flex items-center space-x-3">
+                  <Image src={item.image} alt={item.title} width={2} className="w-12 h-12 object-contain" />
+                  <div>
+                    <p className="font-medium">{item.title}</p>
+                    <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                  </div>
+                </div>
+                <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+              </div>
             ))}
-          </Box>
-        </Box>
+          </div>
+        </div>
       )}
-    </Box>
+    </section>
   );
-}
+};
